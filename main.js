@@ -1,51 +1,82 @@
 const formSearch = document.querySelector('.form-search'),
       inputCitiesFrom = document.querySelector('.input__cities-from'),
       inputCitiesTo = document.querySelector('.input__cities-to'),
-      dropdownSitiesFrom = document.querySelector('.dropdown__cities-from'),
-      dropdownSitiesTo = document.querySelector('.dropdown__cities-to'),
+      dropdownCitiesFrom = document.querySelector('.dropdown__cities-from'),
+      dropdownCitiesTo = document.querySelector('.dropdown__cities-to'),
       inputDateDepart = document.querySelector('.input__date-depart');
 
-const сity = ["Москва", "Минск", "Самара", "Одесса", "Екатеринбург",
-              "Нижний-Новгород", "Калиниград", "Вроцлав", "Санкт-Петербург",
-              "Киев", "Волгоград", "Челябинск", "Днепропетровск", "Керчь"];
+let сity = [];
+
+const citiesApi = 'dataBase/cities.json',
+      proxy = 'https://cors-anywhere.herokuapp.com/',
+      API_KEY = 'f6f7e9439d56ced6fb60cb83274a2feb',
+      calendar = 'http://min-prices.aviasales.ru/calendar_preload';
+
+const getData = (url, callback) => {
+    const request = new XMLHttpRequest();
+
+    request.open('GET', url);
+
+    request.addEventListener('readystatechange', () => {
+        if (request.readyState !== 4) return;
+            
+        if(request.status === 200) {
+            callback(request.response);
+        } else {
+            console.error(request.status);
+        }
+    });
+
+    request.send();
+};
 
 const showCity = (input, list) => {
     list.textContent = '';
 
     if(input.value !== '') {
         const filterCity = сity.filter((item) => {
-            const fixItem = item.toLowerCase();
+            const fixItem = item.name.toLowerCase();
             return fixItem.includes(input.value.toLowerCase());
-        })
+        });
+        
         filterCity.forEach((item) => {
+            
             const li = document.createElement('li');
             li.classList.add('dropdown__city');
-            li.textContent = item;
+            li.textContent = item.name;
             list.append(li);
         });
     }
 };
 
-inputCitiesFrom.addEventListener("input", () => {
-    showCity(inputCitiesFrom, dropdownSitiesFrom);
-});
-
-dropdownSitiesFrom.addEventListener('click', (event) => {
+const selectCity = (event, input, list) => {
     const target = event.target;
     if(target.tagName.toLowerCase() === 'li') {
-        inputCitiesFrom.value = target.textContent;
-        dropdownSitiesFrom.textContent = '';
+        input.value = target.textContent;
+        list.textContent = '';
     }
+};
+
+inputCitiesFrom.addEventListener('input', () => {
+    showCity(inputCitiesFrom, dropdownCitiesFrom);
 });
 
 inputCitiesTo.addEventListener('input', () => {
-    showCity(inputCitiesTo, dropdownSitiesTo);
+    showCity(inputCitiesTo, dropdownCitiesTo);
 });
 
-dropdownSitiesTo.addEventListener('click', (event) => {
-    const target = event.target;
-    if(target.tagName.toLowerCase() === 'li') {
-        inputCitiesTo.value = target.textContent;
-        dropdownSitiesTo.textContent = '';
-    }
+dropdownCitiesFrom.addEventListener('click', (event) => {
+    selectCity(event, inputCitiesFrom, dropdownCitiesFrom);
+});
+
+dropdownCitiesTo.addEventListener('click', (event) => {
+    selectCity(event, inputCitiesTo, dropdownCitiesTo);
+});
+
+getData(citiesApi, (data) => {
+    city = JSON.parse(data).filter((item) => {
+        return item.name;
+    });
+    
+    console.log(city);
 });
