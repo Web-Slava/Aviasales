@@ -96,14 +96,17 @@ input {
     box-shadow: 0 0 0 2px #ff6d00;
     outline: none;
     font-family: inherit;
+    z-index: 0;
 }
 
 .dropdown {
+    position: relative;
     width: 100%;
     background: #fff;
     color: #000;
     max-height: 300px;
     overflow-x: hidden;
+    z-index: 99;
 }
 
 .dropdown__city {
