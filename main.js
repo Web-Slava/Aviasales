@@ -38,9 +38,8 @@ const showCity = (input, list) => {
             const fixItem = item.name.toLowerCase();
             return fixItem.includes(input.value.toLowerCase());
         });
-        
-        filterCity.forEach((item) => {
-            
+
+        filterCity.forEach((item) => {   
             const li = document.createElement('li');
             li.classList.add('dropdown__city');
             li.textContent = item.name;
@@ -55,6 +54,35 @@ const selectCity = (event, input, list) => {
         input.value = target.textContent;
         list.textContent = '';
     }
+};
+
+
+
+const renderCheapDay = (cheapTicket) => {
+    console.log(cheapTicket);
+};
+
+const renderCheapYear = (cheapTickets) => {
+    cheapTickets.sort((item1, item2) => {
+        const date1 = new Date(item1.depart_date);
+        const date2 = new Date(item2.depart_date);
+
+        return date1 - date2;
+    });
+
+    console.log(cheapTickets);
+};
+
+const renderCheap = (data, date) => {
+    const cheapTicketYear = JSON.parse(data).best_prices;
+
+    const cheapTicketDay = cheapTicketYear.filter((item) => {
+        return item.depart_date === date;
+    });
+
+    renderCheapDay(cheapTicketDay);
+    renderCheapYear(cheapTicketYear);
+    
 };
 
 inputCitiesFrom.addEventListener('input', () => {
@@ -73,10 +101,37 @@ dropdownCitiesTo.addEventListener('click', (event) => {
     selectCity(event, inputCitiesTo, dropdownCitiesTo);
 });
 
+formSearch.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const cityFrom = city.find((item) => inputCitiesFrom.value === item.name);
+    const cityTo = city.find((item) => inputCitiesTo.value === item.name);
+    const formData = {
+        from: cityFrom.code,
+        to: cityTo.code,
+        when: inputDateDepart.value
+    }
+
+    const requestData = `?depart_date=${formData.when}&origin=${formData.from}&destination=${formData.to}&one_way=true`;
+
+    // const requestData = '?depart_date=' + formData.when +
+    //     '&origin=' + formData.from + '&destination=' +
+    //     formData.to + '&one_way=true';
+   
+    getData(calendar + requestData, (response) => {
+        renderCheap(response, formData.when);
+    });
+
+});
+
+
+
+
+
+
+
 getData(citiesApi, (data) => {
     city = JSON.parse(data).filter((item) => {
         return item.name;
     });
-    
-    console.log(city);
 });
