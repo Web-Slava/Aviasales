@@ -5,7 +5,7 @@ const formSearch = document.querySelector('.form-search'),
       dropdownCitiesTo = document.querySelector('.dropdown__cities-to'),
       inputDateDepart = document.querySelector('.input__date-depart');
 
-let сity = [];
+let city = [];
 
 const citiesApi = 'dataBase/cities.json',
       proxy = 'https://cors-anywhere.herokuapp.com/',
@@ -34,7 +34,7 @@ const showCity = (input, list) => {
     list.textContent = '';
 
     if(input.value !== '') {
-        const filterCity = сity.filter((item) => {
+        const filterCity = city.filter((item) => {
             const fixItem = item.name.toLowerCase();
             return fixItem.includes(input.value.toLowerCase());
         });
