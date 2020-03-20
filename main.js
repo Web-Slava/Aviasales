@@ -64,8 +64,8 @@ const renderCheapDay = (cheapTicket) => {
 
 const renderCheapYear = (cheapTickets) => {
     cheapTickets.sort((item1, item2) => {
-        const date1 = new Date(item1.depart_date);
-        const date2 = new Date(item2.depart_date);
+        const date1 = new Date(item1.value);
+        const date2 = new Date(item2.value);
 
         return date1 - date2;
     });
