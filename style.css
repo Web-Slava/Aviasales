@@ -12,6 +12,7 @@ body {
     font-family: "Open Sans", Helvetica, Arial, sans-serif;
     font-weight: 400;
     background: #05263F;
+    
     color: #fff;
 }
 
@@ -124,6 +125,16 @@ input {
     color: #d84d00;
 }
 
+.error-request{
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    font-size: 18px;
+    letter-spacing: .1em;
+    color: rgb(255, 0, 0);
+}
+
 .button {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -143,7 +154,7 @@ input {
     line-height: 1.4;
     font-weight: 500;
     color: inherit;
-    padding: 10px 20px;
+    padding: 7px 12px;
     border: none;
     border-radius: 5px;
     -webkit-appearance: none;

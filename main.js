@@ -5,7 +5,8 @@ const formSearch = document.querySelector('.form-search'),
       dropdownCitiesTo = document.querySelector('.dropdown__cities-to'),
       inputDateDepart = document.querySelector('.input__date-depart'),
       cheapestTicket = document.getElementById('cheapest-ticket'),
-      otherCheapTickets = document.getElementById('other-cheap-tickets');
+      otherCheapTickets = document.getElementById('other-cheap-tickets'),
+      wrongRequest = document.getElementById('wrong-request');
 
 const citiesApi = 'dataBase/cities.json',
       proxy = 'https://cors-anywhere.herokuapp.com/',
@@ -101,8 +102,6 @@ const getLinkAviasales = (data) => {
     link += data.destination;
     link += '1';
 
-    console.log(link);
-
     return link;
 }
 
@@ -118,7 +117,7 @@ const createCard = (data) => {
         <div class="ticket__wrapper">
             <div class="left-side">
                 <a href="${getLinkAviasales(data)}" class="button button__buy" target = "_blank">Купить
-                    за ${data.value}₽</a>
+                    за ${data.value} ₽</a>
             </div>
             <div class="right-side">
                 <div class="block-left">
@@ -151,11 +150,18 @@ const renderCheapDay = (cheapTicket) => {
 
     const ticket = createCard(cheapTicket[0]);
     cheapestTicket.append(ticket);
+    console.log(cheapTicket);
 };
 
 const renderCheapYear = (cheapTickets) => {
-    otherCheapTickets.innerHTML = '<h2>Самые дешевые билеты на другие даты</h2>';
-    cheapTickets.sort((item1, item2) => item1.value -item2.value);
+    otherCheapTickets.innerHTML = '<h2>Другие билеты на ближайшие даты</h2>';
+
+    
+    cheapTickets.sort((item1, item2) => {
+        const date1 = new Date(item1.depart_date);
+        const date2 = new Date(item2.depart_date);
+        return date1 - date2;
+    });
 
     for(let i = 0; i < cheapTickets.length && i < MAX_COUNT; i++) {
         const ticket = createCard(cheapTickets[i]);
@@ -194,6 +200,7 @@ dropdownCitiesTo.addEventListener('click', (event) => {
 
 formSearch.addEventListener('submit', (event) => {
     event.preventDefault();
+    wrongRequest.innerHTML = '';
 
     const cityFrom = city.find((item) => inputCitiesFrom.value === item.name);
 
@@ -205,17 +212,27 @@ formSearch.addEventListener('submit', (event) => {
         when: inputDateDepart.value
     }
 
+    // const errorText = document.createElement('p');  //--- вариант добавления текста с ошибкой
+    // errorText.classList.add('error-request');
+
     if(formData.from && formData.to) {
+        
+
         const requestData = `?depart_date=${formData.when}&origin=${formData.from.code}&destination=${formData.to.code}&one_way=true`;
 
         getData(calendar + requestData, (response) => {
                renderCheap(response, formData.when);
         }, (error) => {
-            alert('В это напрвлении нет рейсов');
+            // errorText.innerHTML = 'К сожалению в этом направлении нет билетов';
+            // wrongRequest.append(errorText);
+            wrongRequest.innerHTML = 'К сожалению в этом направлении нет билетов';
+
             console.error('Ошибка', error);
         });
     } else {
-        alert('Введите корректное название города!');
+        // errorText.innerHTML = 'Введите корректное название города';
+        // wrongRequest.append(errorText);
+        wrongRequest.innerHTML = 'Введите корректное название города';
     }
 
     // const requestData = '?depart_date=' + formData.when +
@@ -238,7 +255,7 @@ getData(citiesApi, (data) => {
         }
         return 0;
     });
-
+    console.log(city);
 
 });
 
