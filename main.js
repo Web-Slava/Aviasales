@@ -17,7 +17,7 @@ const citiesApi = 'dataBase/cities.json',
 let city = [];
 
 // ---- functions ----
-    
+                // формируем запрос на сервер
 const getData = (url, callback, reject = console.error) => {
 
     const request = new XMLHttpRequest();
@@ -35,9 +35,9 @@ const getData = (url, callback, reject = console.error) => {
     });
 
     request.send();
-
 };
 
+            // создает выпадающий список городов
 const showCity = (input, list) => {
     list.textContent = '';
 
@@ -83,7 +83,7 @@ const getChanges = (num) => {
     if(num) {
         return num === 1 ? 'одна пересадка' : 'две пересадки';
     } else {
-        return 'Без пересадок'
+        return 'Без пересадок';
     }
 };
 
@@ -103,7 +103,7 @@ const getLinkAviasales = (data) => {
     link += '1';
 
     return link;
-}
+};
 
 const createCard = (data) => {
     const ticket = document.createElement('article');
@@ -182,6 +182,8 @@ const renderCheap = (data, date) => {
     
 };
 
+        // вызов функций
+
 inputCitiesFrom.addEventListener('input', () => {
     showCity(inputCitiesFrom, dropdownCitiesFrom);
 });
@@ -210,14 +212,13 @@ formSearch.addEventListener('submit', (event) => {
         from: cityFrom,
         to: cityTo,
         when: inputDateDepart.value
-    }
+    };
 
     // const errorText = document.createElement('p');  //--- вариант добавления текста с ошибкой
     // errorText.classList.add('error-request');
 
     if(formData.from && formData.to) {
         
-
         const requestData = `?depart_date=${formData.when}&origin=${formData.from.code}&destination=${formData.to.code}&one_way=true`;
 
         getData(calendar + requestData, (response) => {
